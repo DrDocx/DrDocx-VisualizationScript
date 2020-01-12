@@ -41,9 +41,9 @@ def main():
 	global _jsonPath
 	global _writePath
 
-	if len(sys.argv) < 2:
-		_jsonPath = sys.argv[1]
-		_writePath = sys.argv[2]
+	# if len(sys.argv) < 3:
+	# 	_jsonPath = sys.argv[1]
+	# 	_writePath = sys.argv[2]
 
 	print(Fore.GREEN + "Generating Table")
 	ingestDataFile()
@@ -66,7 +66,7 @@ def ingestDataFile():
 		print("Local Directory is: " + _localDir)
 
 	if AUTOPATH: 
-		_dataFilePath = _localDir + "\\data.json"
+		_dataFilePath = _localDir + "\\patients\\Aaren.json"
 	else: 
 		_dataFilePath = _jsonPath
 	_dataFile = open(_dataFilePath, "r") #read only access of the data file
@@ -86,6 +86,7 @@ def generateChart():
 	global PAGECOUNT
 
 	print("Generating Chart")
+
 
 	_categories = []
 	for _key in _decodedJson.keys():
@@ -107,7 +108,7 @@ def generateChart():
 		# _testList = []
 		# for _key in _decodedJson[_cat].keys():
 		# 	_testList.append(_key)
-		
+
 		for index in range(0, len(_decodedJson[_cat])):
 			_testName = _decodedJson[_cat][index]['RelatedTest']['Name']
 			_testVal = _decodedJson[_cat][index]['ZScore']
@@ -202,7 +203,7 @@ def concatImages():
 		_dest.paste(_curve, (186, 0))
 
 		_dest = _dest.crop((0, 0, _dest.width, 300 * 10))
-		_dest.save(_writePath + "\\renderedVisualization" + str(_page) + ".png")
+		_dest.save(_localDir + "\\renderedVisualization" + str(_page) + ".png")
 
 	# print("PRINTING PAGE: " + str(PAGECOUNT))
 
