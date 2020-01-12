@@ -131,7 +131,7 @@ def generateChart():
 		_xList.append("")
 		_yList.append(0)
 		_colors.append('black')
-	
+
 	_xList.pop()
 	_yList.pop()
 	_colors.pop()
@@ -221,10 +221,10 @@ def concatImages():
 
 def generateManifest():
 	with open('listfile.txt', 'w') as filehandle:
-    for listitem in _imagePaths:
-        filehandle.write('%s\n' % listitem)
+    		for listitem in _imagePaths:
+	        	filehandle.write('%s\n' % listitem)
 
-    s3_client = boto3.client('s3')
+	s3_client = boto3.client('s3')
 	response = s3_client.upload_file("listfile.txt", "doctordocx-demopatientdata", "listfile.txt")
 
 
