@@ -10,6 +10,8 @@ import matplotlib.image as mpimg
 import random	
 import math
 
+import boto3
+
 init() #colorama
 
 
@@ -54,6 +56,7 @@ def main():
 	print(Fore.BLUE + "Generating Image Page	")
 	#loadNormalCurve()
 	concatImages()
+	generateManifest()
 
 #Assume the data file is in the same directory with name dataFile.txt
 def ingestDataFile():
@@ -67,8 +70,12 @@ def ingestDataFile():
 	if DEBUG:
 		print("Local Directory is: " + _localDir)
 
+
+	s3 = boto3.client('s3')
+	s3.download_file('doctordocx-demopatientdata', 'dataFile.json', 'Patient_Aaren.json')
+
 	if AUTOPATH: 
-		_dataFilePath = _localDir + "\\patients\\Patient_Aaren.json"
+		_dataFilePath = _localDir + "/Patient_Aaren.json"
 	else: 
 		_dataFilePath = _jsonPath
 	_dataFile = open(_dataFilePath, "r") #read only access of the data file
@@ -185,12 +192,12 @@ def saveChart(pageNumber):
 	print(Fore.YELLOW + "Saving Graph " + str(pageNumber))
 	fig = plt.gcf()
 	fig.set_size_inches(8, 10.5)
-	fig.savefig(_localDir + "\\graph" + str(pageNumber) + ".png", tranparent=True, dpi = 300, orientation = 'portrait', pad_inches = 0)
+	fig.savefig(_localDir + "/graph" + str(pageNumber) + ".png", tranparent=True, dpi = 300, orientation = 'portrait', pad_inches = 0)
 	plt.clf()
 
 def loadNormalCurve():
 	print("Loading Curve Image")
-	img = mpimg.imread(_localDir + "\\NormalCurve.png")
+	img = mpimg.imread(_localDir + "/NormalCurve.png")
 
 def concatImages():
 	global PAGECOUNT
@@ -198,16 +205,29 @@ def concatImages():
 
 	for _page in range(1, PAGECOUNT + 1):
 		print(Fore.CYAN + "Generating Visualization Page " + str(_page))
-		_curve = Image.open(_localDir + "\\NormalCurveResized.png")
-		_table = Image.open(_localDir + "\\graph" + str(_page) + ".png")
+		_curve = Image.open(_localDir + "/NormalCurveResized.png")
+		_table = Image.open(_localDir + "/graph" + str(_page) + ".png")
 
 		_dest = Image.new('RGB', (_table.width, _table.height + _curve.height), (255, 255, 255))
 		_dest.paste(_table, (0, _curve.height - 470))
 		_dest.paste(_curve, (186, 0))
 
 		_dest = _dest.crop((0, 0, _dest.width, 300 * 10))
-		_dest.save(_localDir + "\\renderedVisualization" + str(_page) + ".png")
-		_imagePaths.append(_localDir + "\\renderedVisualization" + str(_page) + ".png")
+		_dest.save(_localDir + "/renderedVisualization" + str(_page) + ".png")
+		_imagePaths.append(_localDir + "/renderedVisualization" + str(_page) + ".png")
+
+		s3_client = boto3.client('s3')
+		response = s3_client.upload_file(_localDir + "/renderedVisualization" + str(_page) + ".png", "doctordocx-demopatientdata", "renderedVisualization" + str(_page) + ".png")
+
+def generateManifest():
+	with open('listfile.txt', 'w') as filehandle:
+    for listitem in _imagePaths:
+        filehandle.write('%s\n' % listitem)
+
+    s3_client = boto3.client('s3')
+	response = s3_client.upload_file("listfile.txt", "doctordocx-demopatientdata", "listfile.txt")
+
+
 	# print("PRINTING PAGE: " + str(PAGECOUNT))
 
 	# _curve = Image.open(_localDir + "\\NormalCurveResized.png")
