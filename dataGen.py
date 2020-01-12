@@ -55,7 +55,7 @@ def pullTestsFromFile():
 	_dataFile.close()
 
 def generateTestGroups():
-	print("Generating Test Groups")
+	#print("Generating Test Groups")
 	global _tests
 
 	_groupA = []
@@ -85,8 +85,9 @@ def generateTest(name):
 
 def process():
 
-	for patient in _data:
-		generatePatients(patient)
+	for index in range(0, len(_data)):
+		print("GENERATING PATIENT: " + str(index))
+		generatePatients(_data[index])
 
 
 def generatePatients(name):

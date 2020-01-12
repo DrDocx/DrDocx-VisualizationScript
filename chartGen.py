@@ -9,6 +9,7 @@ from PIL import Image
 import matplotlib.image as mpimg
 import random	
 import math
+from docx import Document
 
 
 init() #colorama
@@ -25,6 +26,8 @@ _localDir = ""
 _jsonPath = ""
 _writePath = ""
 
+_imagePaths = []
+
 _count = 0.0
 _totalDotsH = 0.0
 
@@ -35,6 +38,7 @@ FIRSTPAGE = True
 DONE = False
 AUTOPATH = True
 PAGECOUNT = 1
+GENDOCX = True
 
 def main():
 	global DONE 
@@ -52,6 +56,7 @@ def main():
 	print(Fore.BLUE + "Generating Image Page	")
 	#loadNormalCurve()
 	concatImages()
+	generateDoc()
 
 #Assume the data file is in the same directory with name dataFile.txt
 def ingestDataFile():
@@ -192,6 +197,7 @@ def loadNormalCurve():
 
 def concatImages():
 	global PAGECOUNT
+	global _imagePaths
 
 	for _page in range(1, PAGECOUNT + 1):
 		print(Fore.CYAN + "Generating Visualization Page " + str(_page))
@@ -204,7 +210,7 @@ def concatImages():
 
 		_dest = _dest.crop((0, 0, _dest.width, 300 * 10))
 		_dest.save(_localDir + "\\renderedVisualization" + str(_page) + ".png")
-
+		_imagePaths.append(_localDir + "\\renderedVisualization" + str(_page) + ".png")
 	# print("PRINTING PAGE: " + str(PAGECOUNT))
 
 	# _curve = Image.open(_localDir + "\\NormalCurveResized.png")
@@ -228,6 +234,17 @@ def concatImages():
 
 	# FIRSTPAGE = False
 	# PAGECOUNT = PAGECOUNT + 1
+
+def generateDoc():
+	document = Document()
+
+	para = document.add_paragraph()
+	run = para.add_run()
+
+	for image in _imagePaths:
+		run.add_picture(image)
+
+	document.save(_localDir + "/visualization.docx")
 
 if __name__ == "__main__":
     main()
