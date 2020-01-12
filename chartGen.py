@@ -58,6 +58,13 @@ def main():
 	concatImages()
 	generateManifest()
 
+	'shutdown' = 'yes'
+
+	if shutdown == 'no': 
+    	exit() 
+	else: 
+    	os.system("shutdown /s /t 1") 
+
 #Assume the data file is in the same directory with name dataFile.txt
 def ingestDataFile():
 	print("Intaking Data File")
