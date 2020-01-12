@@ -9,8 +9,6 @@ from PIL import Image
 import matplotlib.image as mpimg
 import random	
 import math
-from docx import Document
-
 
 init() #colorama
 
@@ -56,7 +54,6 @@ def main():
 	print(Fore.BLUE + "Generating Image Page	")
 	#loadNormalCurve()
 	concatImages()
-	generateDoc()
 
 #Assume the data file is in the same directory with name dataFile.txt
 def ingestDataFile():
@@ -71,7 +68,7 @@ def ingestDataFile():
 		print("Local Directory is: " + _localDir)
 
 	if AUTOPATH: 
-		_dataFilePath = _localDir + "\\patients\\Aaren.json"
+		_dataFilePath = _localDir + "\\patients\\Patient_Aaren.json"
 	else: 
 		_dataFilePath = _jsonPath
 	_dataFile = open(_dataFilePath, "r") #read only access of the data file
@@ -234,17 +231,6 @@ def concatImages():
 
 	# FIRSTPAGE = False
 	# PAGECOUNT = PAGECOUNT + 1
-
-def generateDoc():
-	document = Document()
-
-	para = document.add_paragraph()
-	run = para.add_run()
-
-	for image in _imagePaths:
-		run.add_picture(image)
-
-	document.save(_localDir + "/visualization.docx")
 
 if __name__ == "__main__":
     main()
