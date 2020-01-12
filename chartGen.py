@@ -23,6 +23,7 @@ _decodedJson = dict()
 _localDir = ""
 
 _jsonPath = ""
+_writePath = ""
 
 _count = 0.0
 _totalDotsH = 0.0
@@ -38,9 +39,11 @@ PAGECOUNT = 1
 def main():
 	global DONE 
 	global _jsonPath
+	global _writePath
 
-	if len(sys.argv) < 1:
+	if len(sys.argv) < 2:
 		_jsonPath = sys.argv[1]
+		_writePath = sys.argv[2]
 
 	print(Fore.GREEN + "Generating Table")
 	ingestDataFile()
@@ -199,7 +202,7 @@ def concatImages():
 		_dest.paste(_curve, (186, 0))
 
 		_dest = _dest.crop((0, 0, _dest.width, 300 * 10))
-		_dest.save(_localDir + "\\renderedVisualization" + str(_page) + ".png")
+		_dest.save(_writePath + "\\renderedVisualization" + str(_page) + ".png")
 
 	# print("PRINTING PAGE: " + str(PAGECOUNT))
 
